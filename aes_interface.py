@@ -68,6 +68,7 @@ def encrypt_file():
             key_size=tamanho_key1, 
             mode_OP=mode1,
             output_format=entradasaida1
+            output_format=entradasaida1
         )
         messagebox.showinfo("Sucesso", "Arquivo criptografado com sucesso!")
     except Exception as e:
@@ -124,6 +125,7 @@ def decrypt_file():
 
 # Criando a interface com Tkinter
 root = tk.Tk()
+root.title("Cifragem/Decifragem AES ")
 root.title("Cifragem/Decifragem AES ")
 
 # Campos de entrada
