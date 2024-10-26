@@ -16,6 +16,17 @@ def save_file():
         output_file_entry.delete(0, tk.END)
         output_file_entry.insert(0, file_path)
 
+# Função para validar se a chave e o IV estão no formato adequado
+def validate_key_iv_format(key, iv, key_format, iv_format):
+    try:
+        if key_format == "hex":
+            bytes.fromhex(key)  # Verifica se a chave é HEX válida
+        if iv_format == "hex":
+            bytes.fromhex(iv)  # Verifica se o IV é HEX válido
+        return True
+    except ValueError as e:
+        return False
+
 # Função para criptografar
 def encrypt_file():
     key1 = key_entry.get()
@@ -26,22 +37,24 @@ def encrypt_file():
     output_file1 = output_file_entry.get()
     mode1 = mode_var.get()
     entradasaida1 = entradasaida.get()
-    tamanho_key1 = tamanho_chave.get()
+    tamanho_key1 = int(tamanho_chave.get())
     
     # Validações básicas
     if not key1 or not iv1 or not input_file1 or not output_file1:
         messagebox.showerror("Erro", "Todos os campos são obrigatórios.")
         return
 
+    # Validações de tamanho de chave
+    key_lengths = {128: 32, 192: 48, 256: 64}
+    required_key_length = key_lengths.get(tamanho_key1)
+    
+    if len(key1) != required_key_length:
+        messagebox.showerror("Erro", f"A chave precisa ter {required_key_length} caracteres.")
+        return
 
-    if len(key1) != 32 and tamanho_key1 == "128":
-        messagebox.showerror("Erro", "A chave precisa ter 32 caracteres.")
-        return
-    if len(key1) != 48 and tamanho_key1 == "192":
-        messagebox.showerror("Erro", "A chave precisa ter 48 caracteres.")
-        return
-    if len(key1) != 64 and tamanho_key1 == "256":
-        messagebox.showerror("Erro", "A chave precisa ter 64 caracteres.")
+    # Validação do formato da chave e IV
+    if not validate_key_iv_format(key1, iv1, key_mode1, iv_mode1):
+        messagebox.showerror("Erro", "Formato de chave ou IV inválido para o tipo selecionado.")
         return
 
     try:
@@ -70,22 +83,24 @@ def decrypt_file():
     output_file1 = output_file_entry.get()
     mode1 = mode_var.get()
     entradasaida1 = entradasaida.get()
-    tamanho_key1 = tamanho_chave.get()
+    tamanho_key1 = int(tamanho_chave.get())
     
     # Validações básicas
     if not key1 or not iv1 or not input_file1 or not output_file1:
         messagebox.showerror("Erro", "Todos os campos são obrigatórios.")
         return
 
+    # Validações de tamanho de chave
+    key_lengths = {128: 32, 192: 48, 256: 64}
+    required_key_length = key_lengths.get(tamanho_key1)
+    
+    if len(key1) != required_key_length:
+        messagebox.showerror("Erro", f"A chave precisa ter {required_key_length} caracteres.")
+        return
 
-    if len(key1) != 32 and tamanho_key1 == "128":
-        messagebox.showerror("Erro", "A chave precisa ter 32 caracteres.")
-        return
-    if len(key1) != 48 and tamanho_key1 == "192":
-        messagebox.showerror("Erro", "A chave precisa ter 48 caracteres.")
-        return
-    if len(key1) != 64 and tamanho_key1 == "256":
-        messagebox.showerror("Erro", "A chave precisa ter 64 caracteres.")
+    # Validação do formato da chave e IV
+    if not validate_key_iv_format(key1, iv1, key_mode1, iv_mode1):
+        messagebox.showerror("Erro", "Formato de chave ou IV inválido para o tipo selecionado.")
         return
 
     try:
@@ -102,7 +117,10 @@ def decrypt_file():
         )
         messagebox.showinfo("Sucesso", "Arquivo descriptografado com sucesso!")
     except Exception as e:
-        messagebox.showerror("Erro", str(e)+ "interface decry")
+        messagebox.showerror("Erro", str(e))
+
+# Resto do código para configurar a interface permanece o mesmo
+
 
 # Criando a interface com Tkinter
 root = tk.Tk()
