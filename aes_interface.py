@@ -25,7 +25,7 @@ def encrypt_file():
     input_file1 = input_file_entry.get()
     output_file1 = output_file_entry.get()
     mode1 = mode_var.get()
-    mode_output1 = mode_saida.get()
+    entradasaida1 = entradasaida.get()
     tamanho_key1 = tamanho_chave.get()
     
     # Validações básicas
@@ -35,13 +35,13 @@ def encrypt_file():
 
 
     if len(key1) != 32 and tamanho_key1 == "128":
-        messagebox.showerror("Erro", "A chave precisa ter 32 caracteres hexadecimais.")
+        messagebox.showerror("Erro", "A chave precisa ter 32 caracteres.")
         return
     if len(key1) != 48 and tamanho_key1 == "192":
-        messagebox.showerror("Erro", "A chave precisa ter 48 caracteres hexadecimais.")
+        messagebox.showerror("Erro", "A chave precisa ter 48 caracteres.")
         return
     if len(key1) != 64 and tamanho_key1 == "256":
-        messagebox.showerror("Erro", "A chave precisa ter 64 caracteres hexadecimais.")
+        messagebox.showerror("Erro", "A chave precisa ter 64 caracteres.")
         return
 
     try:
@@ -54,11 +54,11 @@ def encrypt_file():
             iv_format=iv_mode1, 
             key_size=tamanho_key1, 
             mode_OP=mode1,
-            output_format=mode_output1
+            output_format=entradasaida1
         )
         messagebox.showinfo("Sucesso", "Arquivo criptografado com sucesso!")
     except Exception as e:
-        messagebox.showerror("Erro", str(e) + " interface encry")
+        messagebox.showerror("Erro", str(e))
 
 # Função para descriptografar
 def decrypt_file():
@@ -69,7 +69,7 @@ def decrypt_file():
     input_file1 = input_file_entry.get()
     output_file1 = output_file_entry.get()
     mode1 = mode_var.get()
-    mode_input1 = mode_entrada.get()
+    entradasaida1 = entradasaida.get()
     tamanho_key1 = tamanho_chave.get()
     
     # Validações básicas
@@ -79,13 +79,13 @@ def decrypt_file():
 
 
     if len(key1) != 32 and tamanho_key1 == "128":
-        messagebox.showerror("Erro", "A chave precisa ter 32 caracteres hexadecimais.")
+        messagebox.showerror("Erro", "A chave precisa ter 32 caracteres.")
         return
     if len(key1) != 48 and tamanho_key1 == "192":
-        messagebox.showerror("Erro", "A chave precisa ter 48 caracteres hexadecimais.")
+        messagebox.showerror("Erro", "A chave precisa ter 48 caracteres.")
         return
     if len(key1) != 64 and tamanho_key1 == "256":
-        messagebox.showerror("Erro", "A chave precisa ter 64 caracteres hexadecimais.")
+        messagebox.showerror("Erro", "A chave precisa ter 64 caracteres.")
         return
 
     try:
@@ -98,7 +98,7 @@ def decrypt_file():
             iv_format=iv_mode1, 
             key_size=tamanho_key1, 
             mode_OP=mode1,
-            input_format=mode_input1
+            input_format=entradasaida1
         )
         messagebox.showinfo("Sucesso", "Arquivo descriptografado com sucesso!")
     except Exception as e:
@@ -106,7 +106,7 @@ def decrypt_file():
 
 # Criando a interface com Tkinter
 root = tk.Tk()
-root.title("AES Encrypt/Decrypt")
+root.title("Cifragem/Decifragem AES ")
 
 # Campos de entrada
 tk.Label(root, text="Chave:").grid(row=0, column=0, padx=10, pady=5)
@@ -143,16 +143,11 @@ tk.Radiobutton(root, text="CBC", variable=mode_var, value="CBC").grid(row=4, col
 tk.Radiobutton(root, text="ECB", variable=mode_var, value="ECB").grid(row=4, column=1, padx=80, sticky=tk.W)
 
 # Modo de entrada/saida
-tk.Label(root, text="Entrada:").grid(row=5, column=0, padx=10, pady=5)
-mode_saida = tk.StringVar(value="null")
-tk.Radiobutton(root, text="HEX", variable=mode_saida, value="hex").grid(row=5, column=1, sticky=tk.W, padx=10)
-tk.Radiobutton(root, text="BASE64", variable=mode_saida, value="base64").grid(row=5, column=1, padx=80, sticky=tk.W)
+tk.Label(root, text="Entrada (descripto)/Saída (cripto):").grid(row=5, column=0, padx=10, pady=5)
+entradasaida = tk.StringVar(value="null")
+tk.Radiobutton(root, text="HEX", variable=entradasaida, value="hex").grid(row=5, column=1, sticky=tk.W, padx=10)
+tk.Radiobutton(root, text="BASE64", variable=entradasaida, value="base64").grid(row=5, column=1, padx=80, sticky=tk.W)
 
-# Modo de saida
-tk.Label(root, text="Saída:").grid(row=6, column=0, padx=10, pady=5)
-mode_entrada = tk.StringVar(value="null")
-tk.Radiobutton(root, text="HEX", variable=mode_entrada, value="hex").grid(row=6, column=1, sticky=tk.W, padx=10)
-tk.Radiobutton(root, text="BASE64", variable=mode_entrada, value="base64").grid(row=6, column=1, padx=80, sticky=tk.W)
 
 # Tamanho da chave
 tk.Label(root, text="Tamanho da chave:").grid(row=7, column=0, padx=10, pady=5)
