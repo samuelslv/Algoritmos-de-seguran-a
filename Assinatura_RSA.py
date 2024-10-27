@@ -3,7 +3,7 @@ from tkinter import filedialog, messagebox
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256, SHA384, SHA512
-
+import base64
 
 def selecionar_arquivo(opcao):
     caminho_arquivo = filedialog.askopenfilename()
@@ -14,19 +14,18 @@ def selecionar_arquivo(opcao):
         arquivo_claro_label.delete(0, tk.END)
         arquivo_claro_label.insert(0, caminho_arquivo)
 
-
 def salvar_arquivo():
     file_path = filedialog.asksaveasfilename(defaultextension=".sig")
     if file_path:
         arquivo_assinado_label.delete(0, tk.END)
         arquivo_assinado_label.insert(0, file_path)
 
-
 def assinar_arquivo():
     chave_privada = chave_privada_label.get()
     arquivo_claro = arquivo_claro_label.get()
     arquivo_assinado = arquivo_assinado_label.get()
     versao_hash = versao_hash_label.get()
+    formato_saida = formato_saida_label.get()
 
     if not chave_privada or not arquivo_claro or not arquivo_assinado:
         messagebox.showerror("Erro", "Todos os campos são obrigatórios.")
@@ -48,50 +47,53 @@ def assinar_arquivo():
 
         assinatura = pkcs1_15.new(private_key).sign(hash_obj)
 
-        with open(arquivo_assinado, 'wb') as f:
+        # Formatar a assinatura como hex ou base64
+        if formato_saida == "hex":
+            assinatura = assinatura.hex()
+        else:  # base64
+            assinatura = base64.b64encode(assinatura).decode('utf-8')
+
+        # Salvar a assinatura no arquivo de saída
+        with open(arquivo_assinado, 'w') as f:
             f.write(assinatura)
 
-        messagebox.showinfo("Sucesso", "Arquivo assinado com sucesso!")
+        messagebox.showinfo("Sucesso", f"Arquivo assinado com sucesso! Formato de saída: {formato_saida.upper()}")
     except Exception as e:
         messagebox.showerror("Erro", str(e))
-
 
 # Criando a interface para Assinatura
 root = tk.Tk()
 root.title("Assinatura RSA")
 
-tk.Label(root, text="Arquivo chave privada:").grid(
-    row=0, column=0, padx=10, pady=5)
+tk.Label(root, text="Arquivo chave privada:").grid(row=0, column=0, padx=10, pady=5)
 chave_privada_label = tk.Entry(root, width=50)
 chave_privada_label.grid(row=0, column=1, padx=10, pady=5)
-tk.Button(root, text="Selecionar arquivo", command=lambda: selecionar_arquivo(
-    "1")).grid(row=0, column=2, padx=5, pady=5)
+tk.Button(root, text="Selecionar arquivo", command=lambda: selecionar_arquivo("1")).grid(row=0, column=2, padx=5, pady=5)
 
 tk.Label(root, text="Arquivo em claro:").grid(row=1, column=0, padx=10, pady=5)
 arquivo_claro_label = tk.Entry(root, width=50)
 arquivo_claro_label.grid(row=1, column=1, padx=10, pady=5)
-tk.Button(root, text="Selecionar arquivo", command=lambda: selecionar_arquivo(
-    "2")).grid(row=1, column=2, padx=5, pady=5)
+tk.Button(root, text="Selecionar arquivo", command=lambda: selecionar_arquivo("2")).grid(row=1, column=2, padx=5, pady=5)
 
-tk.Label(root, text="Arquivo de saída (assinar):").grid(
-    row=2, column=0, padx=10, pady=5)
+tk.Label(root, text="Arquivo de saída (assinar):").grid(row=2, column=0, padx=10, pady=5)
 arquivo_assinado_label = tk.Entry(root, width=50)
 arquivo_assinado_label.grid(row=2, column=1, padx=10, pady=5)
-tk.Button(root, text="Salvar como", command=salvar_arquivo).grid(
-    row=2, column=2, padx=10, pady=5)
+tk.Button(root, text="Salvar como", command=salvar_arquivo).grid(row=2, column=2, padx=10, pady=5)
 
 # Modo de hash
 tk.Label(root, text="Versão do SHA-2:").grid(row=3, column=0, padx=10, pady=5)
 versao_hash_label = tk.StringVar(value="SHA256")
-tk.Radiobutton(root, text="SHA256", variable=versao_hash_label,
-               value="SHA256").grid(row=3, column=1, sticky=tk.W)
-tk.Radiobutton(root, text="SHA384", variable=versao_hash_label, value="SHA384").grid(
-    row=3, column=1, padx=80, sticky=tk.W)
-tk.Radiobutton(root, text="SHA512", variable=versao_hash_label, value="SHA512").grid(
-    row=3, column=1, padx=150, sticky=tk.W)
+tk.Radiobutton(root, text="SHA256", variable=versao_hash_label, value="SHA256").grid(row=3, column=1, sticky=tk.W)
+tk.Radiobutton(root, text="SHA384", variable=versao_hash_label, value="SHA384").grid(row=3, column=1, padx=80, sticky=tk.W)
+tk.Radiobutton(root, text="SHA512", variable=versao_hash_label, value="SHA512").grid(row=3, column=1, padx=150, sticky=tk.W)
+
+# Formato de saída
+tk.Label(root, text="Formato de saída:").grid(row=4, column=0, padx=10, pady=5)
+formato_saida_label = tk.StringVar(value="hex")
+tk.Radiobutton(root, text="Hexadecimal", variable=formato_saida_label, value="hex").grid(row=4, column=1, sticky=tk.W)
+tk.Radiobutton(root, text="Base64", variable=formato_saida_label, value="base64").grid(row=4, column=1, padx=80, sticky=tk.W)
 
 # Botão de assinar
-tk.Button(root, text="Assinar", command=assinar_arquivo).grid(
-    row=4, column=1, padx=10, pady=20)
+tk.Button(root, text="Assinar", command=assinar_arquivo).grid(row=5, column=1, padx=10, pady=20)
 
 root.mainloop()

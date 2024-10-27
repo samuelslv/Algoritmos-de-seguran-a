@@ -3,7 +3,7 @@ from Crypto.Util.Padding import pad, unpad
 import base64
 
 # Função para criptografar
-def aes_encrypt(key, iv, input_file, output_file, key_format, iv_format, key_size, mode_OP, output_format):
+def aes_cifrar(key, iv, input_file, output_file, key_format, iv_format, key_size, mode_OP, output_format):
     with open(input_file, 'rb') as f:
         plaintext = f.read()
 
@@ -43,7 +43,7 @@ def aes_encrypt(key, iv, input_file, output_file, key_format, iv_format, key_siz
     print(f"Arquivo {input_file} criptografado como {output_file}")
 
 # Função para descriptografar
-def aes_decrypt(key, iv, input_file, output_file, key_format, iv_format, key_size, mode_OP, input_format):
+def aes_decifrar(key, iv, input_file, output_file, key_format, iv_format, key_size, mode_OP, input_format):
     with open(input_file, 'rb') as f:
         ciphertext = f.read()
 
